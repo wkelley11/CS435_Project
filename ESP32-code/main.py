@@ -18,7 +18,9 @@ oled.poweron()
 
 oled.text('Hello world 1!', 0, 0)
 oled.text('Hello world 2!', 0, 10)
-oled.text('Hello, World 3!', 0, 20)
+oled.text('Hello world 3!', 0, 20)
+
+oled.show()
 
 sleep(5)
 
