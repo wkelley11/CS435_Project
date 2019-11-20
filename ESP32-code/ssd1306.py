@@ -62,6 +62,10 @@ class SSD1306(framebuf.FrameBuffer):
         self.fill(0)
         self.show()
 
+    def clearScreen(self):
+        self.fill(0)
+        self.show()
+
     def poweroff(self):
         self.write_cmd(SET_DISP | 0x00)
 
