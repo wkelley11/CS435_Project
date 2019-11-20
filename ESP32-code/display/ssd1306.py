@@ -66,6 +66,21 @@ class SSD1306(framebuf.FrameBuffer):
         self.fill(0)
         self.show()
 
+    # Scrolls the screen horizontally: text goes to the left of the screen
+    def scrollHorizontal(self):
+
+        self.write_cmd(42)      # Continuous horizontal scroll command – Hex:29h
+        self.write_cmd(0)       # Dummy byte
+        self.write_cmd(0)       # PAGE 0 start address
+        self.write_cmd(0)       # time interval between each scroll step as 6 frames
+        self.write_cmd(3)       # Define PAGE 3 as end page address
+        self.write_cmd(0)       # Vertical scrolling offset (by # of rows)
+        self.write_cmd(47)      # Activate scrolling – Hex:2Fh
+
+    # Issue command to disable any and all scrolling
+    def stopScroll(self):
+        self.write_cmd(46)        # Hex:EF
+
     def poweroff(self):
         self.write_cmd(SET_DISP | 0x00)
 
