@@ -62,8 +62,14 @@ class SSD1306(framebuf.FrameBuffer):
         self.fill(0)
         self.show()
 
+    # Clear the screen (all pixels to black)
     def clearScreen(self):
         self.fill(0)
+        self.show()
+
+    # All pixels to white color
+    def fillWhite(self):
+        self.fill(1)
         self.show()
 
     # Scrolls the screen horizontally: text goes to the left of the screen
