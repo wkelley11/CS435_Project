@@ -5,20 +5,20 @@ import framebuf
 
 
 # register definitions
-SET_CONTRAST        = const(0x81)
-SET_ENTIRE_ON       = const(0xa4)
+SET_CONTRAST        = const(0x81)       # decimal: 129
+SET_ENTIRE_ON       = const(0xa4)       # decimal: 164
 SET_NORM_INV        = const(0xa6)
-SET_DISP            = const(0xae)
-SET_MEM_ADDR        = const(0x20)
-SET_COL_ADDR        = const(0x21)
-SET_PAGE_ADDR       = const(0x22)
-SET_DISP_START_LINE = const(0x40)
-SET_SEG_REMAP       = const(0xa0)
+SET_DISP            = const(0xae)       # decimal: 174
+SET_MEM_ADDR        = const(0x20)       # decimal: 32
+SET_COL_ADDR        = const(0x21)       # decimal: 33
+SET_PAGE_ADDR       = const(0x22)       # decimal: 34
+SET_DISP_START_LINE = const(0x40)       # decimal: 64
+SET_SEG_REMAP       = const(0xa0)       # decimal: 160
 SET_MUX_RATIO       = const(0xa8)
 SET_COM_OUT_DIR     = const(0xc0)
-SET_DISP_OFFSET     = const(0xd3)
+SET_DISP_OFFSET     = const(0xd3)       # decimal: 211
 SET_COM_PIN_CFG     = const(0xda)
-SET_DISP_CLK_DIV    = const(0xd5)
+SET_DISP_CLK_DIV    = const(0xd5)       # decimal: 213
 SET_PRECHARGE       = const(0xd9)
 SET_VCOM_DESEL      = const(0xdb)
 SET_CHARGE_PUMP     = const(0x8d)
@@ -72,20 +72,20 @@ class SSD1306(framebuf.FrameBuffer):
         self.fill(1)
         self.show()
 
-    # Scrolls the screen horizontally: text goes to the left of the screen
+    # Scrolls the screen horizontally: text goes towards screen left edge
     def scrollHorizontal(self):
 
-        self.write_cmd(42)      # Continuous horizontal scroll command – Hex:29h
-        self.write_cmd(0)       # Dummy byte
-        self.write_cmd(0)       # PAGE 0 start address
-        self.write_cmd(0)       # time interval between each scroll step as 6 frames
-        self.write_cmd(3)       # Define PAGE 3 as end page address
-        self.write_cmd(0)       # Vertical scrolling offset (by # of rows)
-        self.write_cmd(47)      # Activate scrolling – Hex:2Fh
+        self.write_cmd(0x29)        # Continuous horizontal scroll command – Hex:29h
+        self.write_cmd(0x00)        # Dummy byte
+        self.write_cmd(0x00)        # PAGE 0 start address
+        self.write_cmd(0x00)        # time interval between each scroll step as 6 frames
+        self.write_cmd(0x03)        # Define PAGE 3 as end page address
+        self.write_cmd(0x00)        # Vertical scrolling offset (by # of rows)
+        self.write_cmd(0x2F)        # Activate scrolling
 
     # Issue command to disable any and all scrolling
     def stopScroll(self):
-        self.write_cmd(46)        # Hex:EF
+        self.write_cmd(0x2E)        # Deactivate scrolling
 
     def poweroff(self):
         self.write_cmd(SET_DISP | 0x00)
