@@ -2,6 +2,7 @@
 
 from machine import Pin, I2C
 import ssd1306
+from side_bar import draw_side_bar
 from time import sleep
 
 # ESP32 Pin assignment
@@ -12,37 +13,24 @@ oled_height = 32
 oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
 
 oled.poweron()
+oled.clearScreen()
 
-oled.stopScroll() # Scroll must be stopped before initiating a scroll command!
-
-# 2nd param: x-coord from left edge
-# 3rd param: y-coord from top edge
-oled.text('Hello world 1!', 0, 10)
+# Draw up and down side bar arrows
+draw_side_bar(oled)
 oled.show()
 
-sleep(2)
+sleep(3)
 
-oled.scrollHorizontal()
+oled.text('world yo!', 50, 10)
+oled.show()
 
-sleep(5)
+sleep(3)
 
-oled.stopScroll() # Scroll must be stopped before initiating a scroll command!
+#oled.stopScroll() # Scroll must be stopped before initiating a scroll command!
 
-# sleep(2)
+#oled.poweroff()
+
+
+# def text_cut(str):
 #
-# oled.scrollHorizontal() # scroll the screen
-# sleep(5)
-# oled.stopScroll() # Scroll must be stopped before initiating a scroll command!
-#
-# sleep(5)
-
-
-# oled.clearScreen()
-#
-# oled.text('Hey hey trying', 0, 0)
-# oled.text('trying again!', 0, 10)
-# oled.show()
-#
-# sleep(5)
-
-oled.poweroff()
+#     if(len(str) < )
