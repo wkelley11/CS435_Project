@@ -75,7 +75,7 @@ class SSD1306(framebuf.FrameBuffer):
     # Scrolls the screen horizontally: text goes towards screen left edge
     def scrollHorizontal(self):
 
-        self.write_cmd(0x29)        # Continuous horizontal scroll command – Hex:29h
+        self.write_cmd(0x2A)        # Continuous horizontal scroll command – Hex:29h
         self.write_cmd(0x00)        # Dummy byte
         self.write_cmd(0x00)        # PAGE 0 start address
         self.write_cmd(0x00)        # time interval between each scroll step as 6 frames
