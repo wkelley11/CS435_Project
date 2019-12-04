@@ -3,7 +3,6 @@
 
 from font_petme128_8x8 import alphabet
 
-
 # Input:
 # - oled object
 # - message to display
