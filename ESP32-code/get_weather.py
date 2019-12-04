@@ -11,7 +11,7 @@ def getWeather():
     base_url = "http://openweathermap.org/data/2.5/weather?"
 
     # api key
-    api_key = "1140ddfb29b9a42151d9a8b9ef40f27a"
+    api_key = "82a228a4c8927ad749cc8022b1695974"
 
     # location
     location = "Middlebury,us"
