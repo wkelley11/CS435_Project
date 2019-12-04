@@ -2,29 +2,33 @@
 import urequests
 import json
 
-# Returns a tuple:
-# - current temperature
-# - weather description
+# Get the Middlebury weather from the Accuweather API using the postal code
 def getWeather():
 
-    # api-endpoint
-    base_url = "https://api.weather.gov/gridpoints/"
+    # API credentials
+    user = "jcambefort"
+    api_key = "PiTkuJOebHBDoHPEULaEjEkfMAmBorpI"
 
-    # location
-    gridpoint = "BTV" # use the Burlington station
-    longitude = "92"
-    latitude = "35"
-    special_req = "forecast/hourly/"
+    # API: get hourly weather forecast
+    base_url  = "https://dataservice.accuweather.com//forecasts/v1/hourly/1hour/"
+    api_r = "?apikey="
+    zip_r = "&q="
+
+    # zip code
+    zip = "05753"
+
+    # Accuweather location_key
+    location_key = "2103_PC"
 
     # complete url address
-    complete_url = base_url + gridpoint + "/" + longitude + "," + latitude + "/" + special_req
+    complete_url = base_url + location_key + api_r + api_key
 
     # send get request and saving the response as response object
     response = urequests.get(complete_url)
 
     # get data in json format
-    #data = response.json()
-    print(response.headers())
+    data = response.json()
+    print(data)
     # status_path = "https://api.weather.gov/"
     # statusr = urequests.get(status_path)
     # #format and print desired data from json file
