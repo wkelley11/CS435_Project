@@ -28,28 +28,15 @@ def getWeather():
 
     # get data in json format
     data = response.json()
-    print(data)
-    # status_path = "https://api.weather.gov/"
-    # statusr = urequests.get(status_path)
-    # #format and print desired data from json file
-    # if():
-    #     formated_info = data["periods"]
-    #
-    #     #get current temp
-    #     current_temperature = formated_info["temperature"]
-    #     print(current_temperature)
 
-        # #get current pressure
-        # current_pressure = formated_info["pressure"]
-        #
-        # #get current hum
-        # current_humidity = formated_info["humidity"]
-        #
-        # #get summary
-        # summary = data["weather"]
-        # description = summary[0]["description"]
-        #
-        # #return weather data: temperature and short weather description (e.g. "sunny")
-        # return(str(current_temperature), str(description))
+    formated_data = data[0]
+    temp_data = formated_data["Temperature"]
+    temp = temp_data["Value"]
+    description = formated_data["IconPhrase"]
+
+    tuple = str(temp), str(description)
+    #print(tuple)
+
+    return tuple
 
 getWeather()
