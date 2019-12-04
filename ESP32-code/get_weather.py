@@ -28,7 +28,7 @@ def getWeather():
     #print(data)
 
     #format and print desired data from json file
-    if data["cod"] != "404" | "401":
+    if((data["cod"] != "404") and (data["cod"] != "401")):
         formated_info = data["main"]
 
         #get current temp
