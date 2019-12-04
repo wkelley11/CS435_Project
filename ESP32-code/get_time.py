@@ -51,5 +51,3 @@ def timeScreen():
     bigText(oled, time, 3, 0, 0, 0)
 
     oled.show()
-
-timeScreen()

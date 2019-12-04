@@ -7,7 +7,7 @@ from size_convert import bigText
 
 # Web scraping scripts
 from get_time import getTime
-#from get_stocks import getStocks
+from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
 
 nextScreen = 0 # Default screen at initialization is timeScreen
@@ -26,12 +26,25 @@ oled.stopScroll()
 
 
 def timeScreen():
+
+    #while(True): # while loop to lt it refresh itself
     time = getTime() # uses the network time
     bigText(oled, time, 3, 0, 0, 0)
     oled.show()
+        #sleep(30) # refresh every thirty seconds
 
 def stockScreen():
-    oled.text("Stock", 0, 0)
+    # apple_stock = getStocks("AAPL")
+    # string = "AAPL: "
+    # stock = apple_stock + " USD"
+    # bigText(oled, string, 2, 0, 0, 0)
+    # oled.text(stock, 0, 20)
+    # oled.show()
+
+    # display Euro to USD exchange rate
+    er = getExchange("EUR", "USD")
+    bigText(oled, "EUR->USD", 2, 0, 0, 0)
+    oled.text(er, 0, 20)
     oled.show()
 
 def weatherScreen():
@@ -41,7 +54,7 @@ def weatherScreen():
     temperature = temptuple[0] # string
     forecast_msg = temptuple[1] # string
 
-    oled.text(temperature, 0, 0)
+    oled.text(temperature + " F", 0, 0)
     oled.text(forecast_msg, 0, 15)
 
     #draw_side_bar(oled)
@@ -53,28 +66,49 @@ pinA = Pin(15, Pin.IN)
 pinB = Pin(32, Pin.IN)
 pinC = Pin(14, Pin.IN)
 
-def setScreen(nextScreen):
-    oled.clearScreen() # clear before setting to new screen
-    nextScreen = nextScreen
-    oled.fill(1)
-    sleep(5)
+# Initialize default screen to time
+timeScreen()
 
-# ISR: button A
-def APressed():
+def setScreen(nextScreen):
+
+    oled.clearScreen()
+
+    screens = [
+        timeScreen,
+        stockScreen,
+        weatherScreen
+    ]
+
+    fct = screens[nextScreen]
+    fct()
+
+
+# ISR: button A pressed
+def APressed(pinA):
+
+    global nextScreen
+    global numberOfScreens
 
     nextScreen = (nextScreen - 1) % numberOfScreens
     setScreen(nextScreen)
 
+
 # ISR: button B pressed
-def BPressed():
+def BPressed(pinB):
+
+    global nextScreen
+
     setScreen(nextScreen) # B is refresh button: refresh same screen
 
 # ISR: button C pressed
-def CPressed():
+def CPressed(pinC):
+
+    global nextScreen
+
     nextScreen = (nextScreen + 1) % numberOfScreens
     setScreen(nextScreen)
 
-# Define each function's interrupt service routine
+# Define each pin's interrupt service routine
 pinA.irq(trigger=Pin.IRQ_FALLING, handler=APressed)
-pinA.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
-pinA.irq(trigger=Pin.IRQ_FALLING, handler=CPressed)
+pinB.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
+pinC.irq(trigger=Pin.IRQ_FALLING, handler=CPressed)
