@@ -6,7 +6,8 @@ import json
 def getWeather():
 
     # API credentials
-    api_key = "gDHp31aDxUWAjKN7RffVTyuYtfNA3Bj7"
+    #api_key = "gDHp31aDxUWAjKN7RffVTyuYtfNA3Bj7"
+    api_key = "K3rGM32WvHlTIGBm28mtQsBAghcJ6cwQ"
 
     # API: get hourly weather forecast
     base_url  = "https://dataservice.accuweather.com//forecasts/v1/hourly/1hour/"
