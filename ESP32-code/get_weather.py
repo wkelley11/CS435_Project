@@ -8,41 +8,44 @@ import json
 def getWeather():
 
     # api-endpoint
-    base_url = "http://openweathermap.org/data/2.5/weather?"
-
-    # api key
-    api_key = "82a228a4c8927ad749cc8022b1695974"
+    base_url = "https://api.weather.gov/gridpoints/"
 
     # location
-    location = "Middlebury,us"
+    gridpoint = "BTV" # use the Burlington station
+    longitude = "92"
+    latitude = "35"
+    special_req = "forecast/hourly/"
 
     # complete url address
-    complete_url = base_url + "/appid=" + api_key + "&q=" + location
-    #print(complete_url)
+    complete_url = base_url + gridpoint + "/" + longitude + "," + latitude + "/" + special_req
 
     # send get request and saving the response as response object
     response = urequests.get(complete_url)
 
     # get data in json format
-    data = response.json()
-    #print(data)
+    #data = response.json()
+    print(response.headers())
+    # status_path = "https://api.weather.gov/"
+    # statusr = urequests.get(status_path)
+    # #format and print desired data from json file
+    # if():
+    #     formated_info = data["periods"]
+    #
+    #     #get current temp
+    #     current_temperature = formated_info["temperature"]
+    #     print(current_temperature)
 
-    #format and print desired data from json file
-    if((data["cod"] != "404") and (data["cod"] != "401")):
-        formated_info = data["main"]
+        # #get current pressure
+        # current_pressure = formated_info["pressure"]
+        #
+        # #get current hum
+        # current_humidity = formated_info["humidity"]
+        #
+        # #get summary
+        # summary = data["weather"]
+        # description = summary[0]["description"]
+        #
+        # #return weather data: temperature and short weather description (e.g. "sunny")
+        # return(str(current_temperature), str(description))
 
-        #get current temp
-        current_temperature = formated_info["temp"]
-
-        #get current pressure
-        current_pressure = formated_info["pressure"]
-
-        #get current hum
-        current_humidity = formated_info["humidity"]
-
-        #get summary
-        summary = data["weather"]
-        description = summary[0]["description"]
-
-        #return weather data: temperature and short weather description (e.g. "sunny")
-        return(str(current_temperature), str(description))
+getWeather()
