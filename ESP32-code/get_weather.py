@@ -6,8 +6,7 @@ import json
 def getWeather():
 
     # API credentials
-    user = "jcambefort"
-    api_key = "PiTkuJOebHBDoHPEULaEjEkfMAmBorpI"
+    api_key = "gDHp31aDxUWAjKN7RffVTyuYtfNA3Bj7"
 
     # API: get hourly weather forecast
     base_url  = "https://dataservice.accuweather.com//forecasts/v1/hourly/1hour/"
@@ -38,5 +37,3 @@ def getWeather():
     #print(tuple)
 
     return tuple
-
-getWeather()
