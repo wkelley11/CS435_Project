@@ -11,7 +11,7 @@ from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
 
 nextScreen = 0 # Default screen at initialization is timeScreen
-numberOfScreens = 3
+numberOfScreens = 4
 
 # Initialize the OLED
 # ESP32 Pin assignment
@@ -39,13 +39,15 @@ def timeScreen():
     #     timeScreen() # refresh every thirty seconds
 
 def stockScreen():
-    # apple_stock = getStocks("AAPL")
-    # string = "AAPL: "
-    # stock = apple_stock + " USD"
-    # bigText(oled, string, 2, 0, 0, 0)
-    # oled.text(stock, 0, 20)
-    # oled.show()
+    # display current value of Apple stock
+    apple_stock = getStocks("AAPL")
+    string = "AAPL: "
+    stock = apple_stock + " USD"
+    bigText(oled, string, 2, 0, 0, 0)
+    oled.text(stock, 0, 20)
+    oled.show()
 
+def currencyScreen():
     # display Euro to USD exchange rate
     er = getExchange("EUR", "USD")
     bigText(oled, "EUR->USD", 2, 0, 0, 0)
@@ -81,6 +83,7 @@ def setScreen(nextScreen):
     screens = [
         timeScreen,
         stockScreen,
+        currencyScreen,
         weatherScreen
     ]
 
