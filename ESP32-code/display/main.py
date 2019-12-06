@@ -31,7 +31,12 @@ def timeScreen():
     time = getTime() # uses the network time
     bigText(oled, time, 3, 0, 0, 0)
     oled.show()
-        #sleep(30) # refresh every thirty seconds
+
+    sleep(15) # refresh every fifteen seconds
+    timeScreen()
+
+    #if(getTime()[4] != time[4]):
+    #     timeScreen() # refresh every thirty seconds
 
 def stockScreen():
     # apple_stock = getStocks("AAPL")
