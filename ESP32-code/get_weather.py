@@ -29,6 +29,10 @@ def getWeather():
     # get data in json format
     data = response.json()
 
+    if((response.status_code != 200)):
+        tuple = ("Error:", "API overused.")
+        return tuple
+
     formated_data = data[0]
     temp_data = formated_data["Temperature"]
     temp = temp_data["Value"]
