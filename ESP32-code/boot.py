@@ -19,3 +19,5 @@ def connect():
     print('network config:', sta_if.ifconfig())
 
 connect()
+
+import main
