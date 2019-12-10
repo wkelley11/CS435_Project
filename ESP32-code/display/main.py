@@ -1,5 +1,5 @@
 from machine import Pin, I2C
-from time import sleep
+from time import sleep, sleep_ms
 
 import ssd1306
 from side_bar import draw_side_bar
@@ -9,9 +9,29 @@ from size_convert import bigText
 from get_time import getTime
 from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
+from get_mqtt import *
 
-nextScreen = 0 # Default screen at initialization is timeScreen
-numberOfScreens = 4
+firstState = 0 # Default screen at initialization is timeScreen
+numberOfStates = 5
+
+states = [
+    "timeScreen",
+    "stockScreen",
+    "currencyScreen",
+    "weatherScreen",
+    "mqttScreen"
+]
+
+# Set the pins on the ESP32
+# When a button is pressed, the respective pin is driven low
+pinA = Pin(15, Pin.IN)
+pinB = Pin(32, Pin.IN)
+pinC = Pin(14, Pin.IN)
+
+# Flags --> if 1, button was pressed
+flagA = False
+flagB = False
+flagC = False
 
 # Initialize the OLED
 # ESP32 Pin assignment
@@ -24,37 +44,35 @@ oled.poweron()
 oled.clearScreen()
 oled.stopScroll()
 
-
-def timeScreen():
+def time_refresh():
 
     #while(True): # while loop to lt it refresh itself
-    time = getTime() # uses the network time
-    bigText(oled, time, 3, 0, 0, 0)
+    current_time = getTime() # uses the network time
+    bigText(oled, current_time, 3, 0, 0, 0)
     oled.show()
 
-    sleep(15) # refresh every fifteen seconds
-    timeScreen()
+def stock_refresh():
+    while(True):
+        # display current value of Apple stock
+        apple_stock = getStocks("AAPL")
+        string = "AAPL: "
+        stock = apple_stock + " USD"
+        bigText(oled, string, 2, 0, 0, 0)
+        oled.text(stock, 0, 20)
+        oled.show()
 
-    #if(getTime()[4] != time[4]):
-    #     timeScreen() # refresh every thirty seconds
+    while(True):
+        if(flagA == True):
+            break
 
-def stockScreen():
-    # display current value of Apple stock
-    apple_stock = getStocks("AAPL")
-    string = "AAPL: "
-    stock = apple_stock + " USD"
-    bigText(oled, string, 2, 0, 0, 0)
-    oled.text(stock, 0, 20)
-    oled.show()
-
-def currencyScreen():
+def currency_refresh():
     # display Euro to USD exchange rate
     er = getExchange("EUR", "USD")
     bigText(oled, "EUR->USD", 2, 0, 0, 0)
     oled.text(er, 0, 20)
     oled.show()
 
-def weatherScreen():
+def weather_refresh():
 
     # Get hourly forecast
     temptuple = getWeather()
@@ -67,56 +85,84 @@ def weatherScreen():
     #draw_side_bar(oled)
     oled.show()
 
-# Set the pins on the ESP32
-# When a button is pressed, the respective pin is driven low
-pinA = Pin(15, Pin.IN)
-pinB = Pin(32, Pin.IN)
-pinC = Pin(14, Pin.IN)
 
-# Initialize default screen to time
-timeScreen()
+def mqtt_refresh():
+    # Display latest MQTT feed message
+    message_to_display = fromio
+    oled.text(fromio)
+    oled.show()
 
-def setScreen(nextScreen):
+#######################################################
 
-    oled.clearScreen()
+# Figure out what the next logical state to visit is
+def getNextState(currentState):
 
-    screens = [
-        timeScreen,
-        stockScreen,
-        currencyScreen,
-        weatherScreen
-    ]
+    global numberOfStates
+    global flagA, flagB, flagC
 
-    fct = screens[nextScreen]
-    fct()
+    temp = currentState
+    nextState = currentState
+
+    # A was pressed
+    if(flagA == True):
+        nextState = (currentState - 1) % numberOfStates
+        flagA = False # reset the flag until button A is pressed again
+
+    # C was pressed
+    elif(flagC == True):
+        nextState = (currentState + 1) % numberOfStates
+        flagC = False
+
+
+    if(currentState != nextState):
+        oled.clearScreen()
+
+    return nextState
+
+
+# def updateMQTTMessage():
+#     c.check_msg() # Check if an MQTT message was uploaded
+#     if (new_msg == True):
+#         new_msg = False # reset to false as message is now read
+#
+# def checkTimeElapsed(currentState):
+
+
+######################################################
+
+# Setting up main as a state machine
+def run():
+
+    global firstState, states # get the global list of states
+    nextState = firstState
+
+    while(True):
+
+        if(states[nextState] == "timeScreen"): time_refresh()
+        elif(states[nextState] == "stockScreen"): stock_refresh()
+        elif(states[nextState] == "currencyScreen"): currency_refresh()
+        elif(states[nextState] == "weatherScreen"): weather_refresh()
+        #elif(states[nextState] == "mqttScreen"): mqtt_refresh()
+
+        currentState = nextState
+        nextState = getNextState(currentState)
+        #checkTimeElapsed()
+
+
+######################################################
 
 
 # ISR: button A pressed
 def APressed(pinA):
-
-    global nextScreen
-    global numberOfScreens
-
-    nextScreen = (nextScreen - 1) % numberOfScreens
-    setScreen(nextScreen)
-
-
-# ISR: button B pressed
-def BPressed(pinB):
-
-    global nextScreen
-
-    setScreen(nextScreen) # B is refresh button: refresh same screen
+    global flagA
+    flagA = True
 
 # ISR: button C pressed
 def CPressed(pinC):
-
-    global nextScreen
-
-    nextScreen = (nextScreen + 1) % numberOfScreens
-    setScreen(nextScreen)
+    global flagC
+    flagC = True
 
 # Define each pin's interrupt service routine
 pinA.irq(trigger=Pin.IRQ_FALLING, handler=APressed)
-pinB.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
+#pinB.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
 pinC.irq(trigger=Pin.IRQ_FALLING, handler=CPressed)
