@@ -1,18 +1,17 @@
-# Python script to modify the display size of a given line of text.
-# An expansion factor of 2 would double the size of the text (4 times as many pixels occupied).
+# This script provides functions to modify text or character size,
+# and scroll a string (of standard size) horizontally to the left.
 
 from font_petme128_8x8 import alphabet
 from time import sleep, sleep_ms
 
-# Input:
+# Function to expand text size by a factor. See fct input:
 # - oled object
 # - message to display
-# - factor (int) by which to expand the string
-# - x and y top-left start coordinates of 1st char
-# - spacing to put between each char
+# - factor (int) by which to expand the string (recommended: 2 or 3)
+# - x and y top-left start coordinates of 1st character
+# - spacing to put between each character
 def bigText(oled, message, factor, x_start, y_start, spacing):
 
-    # iterate over each char the string
     x = x_start
     y = y_start
     for char in message:
@@ -21,14 +20,16 @@ def bigText(oled, message, factor, x_start, y_start, spacing):
         bigChar(oled, byte, factor, x, y)
         x += (factor * 8)
 
-# Expands the size of a single character by a factor
+# Expands the size of a single character by a given factor.
+# Function called in bigText(...).
 def bigChar(oled, bits, factor, x, y):
 
-    for i in range(len(bits)): # For every row of bits, in matrix bits
-        for b in range(8): # for each bit in a byte
+    for i in range(len(bits)): # For every row (i.e. byte) in matrix 'bits'
+        for b in range(8): # for every bit in a byte
             for row in range(factor):
                 for col in range(factor):
                     oled.pixel((factor * i) + row + x, (factor * b) + col + y, bits[i]&(0x01<<b))
+
 
 # Scrolls the text off to the left of the screen
 def scrollLeft(oled, str, x, y):
