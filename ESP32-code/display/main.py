@@ -11,6 +11,23 @@ from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
 from get_mqtt import *
 
+# Global variables to store data
+STOCK_DATA = getStocks("AAPL")
+CURRENCY_DATA = getExchange("EUR", "USD")
+WEATHER_DATA = getWeather() #temp and description stored as tuple
+REFRESH_TIMER = utime.ticks_ms()
+
+def refresh_timer():
+    timer = utime.ticks_ms()
+    if timer > 1048576:
+        #refresh the data every ~17.5 minutes
+        STOCK_DATA = getStocks("AAPL")
+        CURRENCY_DATA = getExchange("EUR", "USD")
+        WEATHER_DATA = getWeather()
+
+
+
+
 firstState = 0 # Default screen at initialization is timeScreen
 numberOfStates = 5
 
@@ -54,7 +71,8 @@ def time_refresh():
 def stock_refresh():
     while(True):
         # display current value of Apple stock
-        apple_stock = getStocks("AAPL")
+        #apple_stock = getStocks("AAPL")
+        apple_stock = STOCK_DATA
         string = "AAPL: "
         stock = apple_stock + " USD"
         bigText(oled, string, 2, 0, 0, 0)
@@ -67,7 +85,8 @@ def stock_refresh():
 
 def currency_refresh():
     # display Euro to USD exchange rate
-    er = getExchange("EUR", "USD")
+    #er = getExchange("EUR", "USD")
+    er = CURRENCY_DATA
     bigText(oled, "EUR->USD", 2, 0, 0, 0)
     oled.text(er, 0, 20)
     oled.show()
@@ -75,7 +94,8 @@ def currency_refresh():
 def weather_refresh():
 
     # Get hourly forecast
-    temptuple = getWeather()
+    #temptuple = getWeather()
+    temptuple = WEATHER_DATA
     temperature = temptuple[0] # string
     forecast_msg = temptuple[1] # string
 
@@ -135,6 +155,8 @@ def run():
 
     global firstState, states # get the global list of states
     nextState = firstState
+
+    refresh_timer()
 
     while(True):
 
