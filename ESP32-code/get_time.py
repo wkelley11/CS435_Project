@@ -17,16 +17,16 @@ oled_width = 128
 oled_height = 32
 oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
 
-from ntptime import settime, time
+from ntptime import settime
 from utime import localtime
+
+# set the device time using the network, on script import
+settime()
 
 # Returns the current time as a string, in hour-hour:minute-minute format.
 # This uses the time as defined on the network, so if the network time is off,
 # so will this value.
 def getTime():
-
-    # set the device time using the network
-    settime()
 
     # convert RTC time to more readable time and date
     (year, month, day, hour, minute, second, weekday, yearday) = localtime()
