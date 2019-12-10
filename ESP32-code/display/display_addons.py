@@ -2,6 +2,7 @@
 # An expansion factor of 2 would double the size of the text (4 times as many pixels occupied).
 
 from font_petme128_8x8 import alphabet
+from time import sleep, sleep_ms
 
 # Input:
 # - oled object
@@ -19,9 +20,8 @@ def bigText(oled, message, factor, x_start, y_start, spacing):
         byte = alphabet[asc - 32]
         bigChar(oled, byte, factor, x, y)
         x += (factor * 8)
-        # y does not change
 
-
+# Expands the size of a single character by a factor
 def bigChar(oled, bits, factor, x, y):
 
     for i in range(len(bits)): # For every row of bits, in matrix bits
@@ -29,3 +29,18 @@ def bigChar(oled, bits, factor, x, y):
             for row in range(factor):
                 for col in range(factor):
                     oled.pixel((factor * i) + row + x, (factor * b) + col + y, bits[i]&(0x01<<b))
+
+# Scrolls the text off to the left of the screen
+def scrollLeft(oled, str, x, y):
+    for i in range(len(str)): # for every character
+
+        oled.text(str[i:], x, y) # display from character i to the end
+        oled.show()
+
+        for j in range(8): # for every pixel in the character
+
+            oled.scroll(-1,0) # x_step = -1, y_ step = 0
+            oled.show()
+            sleep_ms(12) # sleep for 12 miliseconds
+
+        oled.fill(0) # clear screen
