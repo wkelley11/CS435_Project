@@ -1,4 +1,5 @@
 import network
+from utime import sleep
 
 WIFI_SSID = 'MiddleburyGuest'
 
@@ -20,4 +21,7 @@ def connect():
 
 connect()
 
-import main
+sleep(2)
+
+from main import *
+run()
