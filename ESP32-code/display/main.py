@@ -1,5 +1,6 @@
 from machine import Pin, I2C
 from time import sleep, sleep_ms
+import utime
 
 import ssd1306
 from side_bar import draw_side_bar
@@ -15,10 +16,9 @@ from io_api import getMQTTMessage
 STOCK_DATA = getStocks("AAPL")
 CURRENCY_DATA = getExchange("EUR", "USD")
 WEATHER_DATA = getWeather() #temp and description stored as tuple
-REFRESH_TIMER = utime.ticks_ms()
 MACHINE_TIME = utime.ticks_ms()
 
-def refreshTimer(MACHINE_TIME):
+def refreshTimer(time):
 
     current_time = utime.ticks_ms()
 
