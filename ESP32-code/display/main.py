@@ -9,7 +9,7 @@ from size_convert import bigText
 from get_time import getTime
 from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
-from get_mqtt import *
+from io_api import getMQTTMessage
 
 # Global variables to store data
 STOCK_DATA = getStocks("AAPL")
@@ -17,8 +17,10 @@ CURRENCY_DATA = getExchange("EUR", "USD")
 WEATHER_DATA = getWeather() #temp and description stored as tuple
 REFRESH_TIMER = utime.ticks_ms()
 
-def refresh_timer():
-    timer = utime.ticks_ms()
+def refreshTimer():
+
+    initial_time = utime.ticks_ms()
+
     if timer > 1048576:
         #refresh the data every ~17.5 minutes
         STOCK_DATA = getStocks("AAPL")
@@ -36,7 +38,7 @@ states = [
     "stockScreen",
     "currencyScreen",
     "weatherScreen",
-    "mqttScreen"
+    "messageScreen"
 ]
 
 # Set the pins on the ESP32
@@ -61,14 +63,14 @@ oled.poweron()
 oled.clearScreen()
 oled.stopScroll()
 
-def time_refresh():
+def timeRefresh():
 
     #while(True): # while loop to lt it refresh itself
     current_time = getTime() # uses the network time
     bigText(oled, current_time, 3, 0, 0, 0)
     oled.show()
 
-def stock_refresh():
+def stockRefresh():
     while(True):
         # display current value of Apple stock
         #apple_stock = getStocks("AAPL")
@@ -83,7 +85,7 @@ def stock_refresh():
         if(flagA == True):
             break
 
-def currency_refresh():
+def currencyRefresh():
     # display Euro to USD exchange rate
     #er = getExchange("EUR", "USD")
     er = CURRENCY_DATA
@@ -91,7 +93,7 @@ def currency_refresh():
     oled.text(er, 0, 20)
     oled.show()
 
-def weather_refresh():
+def weatherRefresh():
 
     # Get hourly forecast
     #temptuple = getWeather()
@@ -106,10 +108,11 @@ def weather_refresh():
     oled.show()
 
 
-def mqtt_refresh():
-    # Display latest MQTT feed message
-    message_to_display = fromio
-    oled.text(fromio)
+def messageRefresh():
+    # Display latest message from Adafruit IO broker
+    message = getMQTTMessage()
+
+    oled.text(message, 0, 0)
     oled.show()
 
 #######################################################
@@ -156,15 +159,15 @@ def run():
     global firstState, states # get the global list of states
     nextState = firstState
 
-    refresh_timer()
+    refreshTimer()
 
     while(True):
 
-        if(states[nextState] == "timeScreen"): time_refresh()
-        elif(states[nextState] == "stockScreen"): stock_refresh()
-        elif(states[nextState] == "currencyScreen"): currency_refresh()
-        elif(states[nextState] == "weatherScreen"): weather_refresh()
-        #elif(states[nextState] == "mqttScreen"): mqtt_refresh()
+        if(states[nextState] == "timeScreen"): timeRefresh()
+        elif(states[nextState] == "stockScreen"): stockRefresh()
+        elif(states[nextState] == "currencyScreen"): currencyRefresh()
+        elif(states[nextState] == "weatherScreen"): weatherRefresh()
+        elif(states[nextState] == "messageScreen"): messageRefresh()
 
         currentState = nextState
         nextState = getNextState(currentState)
