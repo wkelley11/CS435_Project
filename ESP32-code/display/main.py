@@ -28,6 +28,8 @@ def refreshData(time):
         STOCK_DATA = getStocks("AAPL")
         CURRENCY_DATA = getExchange("EUR", "USD")
         WEATHER_DATA = getWeather()
+        return True
+    else return False
 
 
 
@@ -163,8 +165,9 @@ def run():
     nextState = firstState
 
     #check if 20 minutes have past since last data update.
-    refreshData(MACHINE_TIME)
-    MACHINE_TIME = utime.ticks_ms()
+    reset = refreshData(MACHINE_TIME)
+    if reset:
+        MACHINE_TIME = utime.ticks_ms()
 
     while(True):
 
@@ -188,11 +191,16 @@ def APressed(pinA):
     flagA = True
 
 # ISR: button C pressed
+def BPressed(pinB):
+    global flagB
+    flagC = True
+
+# ISR: button C pressed
 def CPressed(pinC):
     global flagC
     flagC = True
 
 # Define each pin's interrupt service routine
 pinA.irq(trigger=Pin.IRQ_FALLING, handler=APressed)
-#pinB.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
+pinB.irq(trigger=Pin.IRQ_FALLING, handler=BPressed)
 pinC.irq(trigger=Pin.IRQ_FALLING, handler=CPressed)
