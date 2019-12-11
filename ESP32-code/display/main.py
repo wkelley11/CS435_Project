@@ -18,7 +18,8 @@ CURRENCY_DATA = getExchange("EUR", "USD")
 WEATHER_DATA = getWeather() #temp and description stored as tuple
 MACHINE_TIME = utime.ticks_ms()
 
-def refreshTimer(time):
+def refreshData(time):
+    #gathers new data from APIs to update global data variables
 
     current_time = utime.ticks_ms()
 
@@ -65,6 +66,7 @@ oled.clearScreen()
 oled.stopScroll()
 
 def timeRefresh():
+    #display the current time
 
     #while(True): # while loop to lt it refresh itself
     current_time = getTime() # uses the network time
@@ -72,6 +74,7 @@ def timeRefresh():
     oled.show()
 
 def stockRefresh():
+    #display value of Apple stock
     while(True):
         # display current value of Apple stock
         #apple_stock = getStocks("AAPL")
@@ -88,16 +91,15 @@ def stockRefresh():
 
 def currencyRefresh():
     # display Euro to USD exchange rate
-    #er = getExchange("EUR", "USD")
+
     er = CURRENCY_DATA
     bigText(oled, "EUR->USD", 2, 0, 0, 0)
     oled.text(er, 0, 20)
     oled.show()
 
 def weatherRefresh():
-
     # Get hourly forecast
-    #temptuple = getWeather()
+
     temptuple = WEATHER_DATA
     temperature = temptuple[0] # string
     forecast_msg = temptuple[1] # string
@@ -160,7 +162,8 @@ def run():
     global firstState, states # get the global list of states
     nextState = firstState
 
-    refreshTimer(MACHINE_TIME)
+    #check if 20 minutes have past since last data update.
+    refreshData(MACHINE_TIME)
     MACHINE_TIME = utime.ticks_ms()
 
     while(True):
