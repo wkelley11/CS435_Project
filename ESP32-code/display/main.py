@@ -16,13 +16,14 @@ STOCK_DATA = getStocks("AAPL")
 CURRENCY_DATA = getExchange("EUR", "USD")
 WEATHER_DATA = getWeather() #temp and description stored as tuple
 REFRESH_TIMER = utime.ticks_ms()
+MACHINE_TIME = utime.ticks_ms()
 
-def refreshTimer():
+def refreshTimer(MACHINE_TIME):
 
-    initial_time = utime.ticks_ms()
+    current_time = utime.ticks_ms()
 
-    if timer > 1048576:
-        #refresh the data every ~17.5 minutes
+    if ((current_time - MACHINE_TIME) / 1200000) >= 1:
+        #refresh the data only if 20 minutes have passed since last refresh
         STOCK_DATA = getStocks("AAPL")
         CURRENCY_DATA = getExchange("EUR", "USD")
         WEATHER_DATA = getWeather()
@@ -159,7 +160,8 @@ def run():
     global firstState, states # get the global list of states
     nextState = firstState
 
-    refreshTimer()
+    refreshTimer(MACHINE_TIME)
+    MACHINE_TIME = utime.ticks_ms()
 
     while(True):
 
