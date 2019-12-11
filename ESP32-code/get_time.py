@@ -3,7 +3,7 @@ from time import sleep
 
 import ssd1306
 from side_bar import draw_side_bar
-from size_convert import bigText
+from display_addons import bigText
 
 # Web scraping scripts
 #from get_time import getTime
