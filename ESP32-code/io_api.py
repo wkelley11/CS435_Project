@@ -1,5 +1,6 @@
 import urequests, json
 
+# Returns last published message in Adafruit IO
 def getMQTTMessage():
 
     base_url = "https://io.adafruit.com/api/v2/jcambefort/feeds"
@@ -7,18 +8,14 @@ def getMQTTMessage():
     data_request = "data/last"
     AIO_key = "2edc7052c6c14d59b4348f933ca58556"
 
-    url = "https://io.adafruit.com/api/v2/jcambefort/feeds/stringupload/data/last?x-aio-key=2edc7052c6c14d59b4348f933ca58556"
+    full_url = base_url + "/" + feed_key + "/" + data_request + "/" + "?x-aio-key=" + AIO_key
 
-    # full_url = base_url + "/" +
-    #     feedkey + "/" +
-    #     data_request + "/" +
-    #     "?x-aio-key=" + AIO_key
-
-    response = urequests.get(url)
+    response = urequests.get(full_url)
     data = response.json()
 
+    # If web response is OK
     if(response.status_code == 200):
         str = data.get("value")
         return(str)
     else:
-        return("Error: " + str(response.status_code))
+        return("Error")
