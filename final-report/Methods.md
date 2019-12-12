@@ -1,0 +1,10 @@
+Methods
+
+To construct our device, we used the Adafruit HUZZAH32 ESP32 and Adafruit Featherwing OLED display.  
+Together, these devices provided a compact and efficient way to gather and display the desired information.  In order to program both the ESP32 board and the display, we used the existing MicroPython library as our driver.
+
+Our code is structured around the Micropython libraries available to us to implement the desired
+functionality.  The scripts that we wrote leverage the modules in the MicroPython library to create the function that each possible screen provides.  For example, we used the time module included in MicroPython to get and update the current time that the board would display.  Further, MicroPython includes urequests (a version of Python's requests), a library that allows for efficient API data acquisition, so we mainly used available APIs as the sources for the data we chose to display.  However, the OLED display is designed for the CircuitPython driver, so we had to modify the MicroPython library in order to communicate between the ESP32 board and the OLED.  The code is divided into a set of display scripts and data scripts.  The main function combines the two sets of scripts to both gather data, and display it to the board.
+
+The interface allows users to scroll through different screens, each displaying a different 
+functionality that our program provides.  To effectively model this in our code, we set up a state machine in the main function where each possible "screen" is represented as a state.  Interrupt service routines, triggered by each of the available buttons on the OLED display (A, B, and C) allow the user to cycle through the screens.  Most of the screens are static (i.e. simply display data).  However, the kitchen timer function allows the user to select a time for the timer (0 - 60 mins.), start the timer, and exit the timer function.  Further, the message function allows users to post messages to the board using the AdafruitIO API app or webpage.  
