@@ -25,7 +25,7 @@ states = [
 ]
 
 # Global variables to store data
-STOCK_DATA = getStocks("AAPL") # returns a string
+STOCK_DATA = getStocks("GOOG") # returns a string
 CURRENCY_DATA = getExchange("EUR", "USD") # returns a string
 WEATHER_DATA = getWeather() # Temperature & weather description (e.g. "sunny") returned as tuple
 
@@ -39,8 +39,8 @@ def refreshData(time):
 
     # Refresh the data only if 20 minutes have passed since the last refresh
     #if(((current_time - time) / 1200000) >= 1):
-    if(((current_time - time) / 10000) >= 1):
-        STOCK_DATA = getStocks("AAPL")
+    if((current_time - time) >= 100):
+        STOCK_DATA = getStocks("GOOG")
         CURRENCY_DATA = getExchange("EUR", "USD")
         WEATHER_DATA = getWeather()
         return True
@@ -170,11 +170,8 @@ def timeRefresh():
     oled.show()
 
 def stockRefresh():
-    #display value of Apple stock
-    # display current value of Apple stock
-    #apple_stock = getStocks("AAPL")
-    apple_stock = STOCK_DATA
-    string = "AAPL: "
+    apple_stock = STOCK_DATA # display current value of Google stock
+    string = "GOOG: "
     stock = apple_stock + " USD"
     bigText(oled, string, 2, 0, 0, 0)
     oled.text(stock, 0, 20)
