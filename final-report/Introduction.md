@@ -8,6 +8,7 @@ modern "smart fridge."  After both living in large group homes this semester (Me
 + Stock values of various companies
 + Kitchen timer
 + Custom message display (i.e. a house member uploads a message from their phone)
++ Display dining hall menu
 
 In order to frame the scope of our project and the ways we envisioned implementing each step, we looked
 through various datasheets and documentation pages to determine what combination of devices, libraries, and implementation strategies would work best.  Those resources are included in the final-report/References.md file.
