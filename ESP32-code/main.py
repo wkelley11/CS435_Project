@@ -38,8 +38,7 @@ def refreshData(time):
     current_time = ticks_ms()
 
     # Refresh the data only if 20 minutes have passed since the last refresh
-    #if(((current_time - time) / 1200000) >= 1):
-    if((current_time - time) >= 100):
+    if(((current_time - time) / 1200000) >= 1):
         STOCK_DATA = getStocks("GOOG")
         CURRENCY_DATA = getExchange("EUR", "USD")
         WEATHER_DATA = getWeather()
