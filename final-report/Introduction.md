@@ -1,4 +1,4 @@
-###Introduction
+#Introduction
 
 Our goal for this project was to create a refrigerator magnet that modeled the functionalities of a
 modern "smart fridge."  After both living in large group homes this semester (Meeker and Homestead), we have come to realize the social importance of the refrigerator as a central gathering place and frequently visited location for almost all members of the house.  For this reason, we decided that it would be highly practical and useful to create a way to give people access to important information, as well as creating a means by which house members could leave messages that the rest of the house is likely to see.  The functions we initially planned to include in the device were:
