@@ -1,24 +1,6 @@
 from machine import Pin, I2C
-from time import sleep
-
-import ssd1306
-from side_bar import draw_side_bar
-from display_addons import bigText
-
-# Web scraping scripts
-#from get_time import getTime
-#from get_stocks import getStocks
-#from get_Weather import getWeather
-
-# Initialize the OLED
-# ESP32 Pin assignment
-i2c = I2C(-1, scl=Pin(22), sda=Pin(23))
-oled_width = 128
-oled_height = 32
-oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-
 from ntptime import settime
-from utime import localtime
+from utime import sleep, localtime
 
 # set the device time using the network, on script import
 settime()
@@ -43,12 +25,3 @@ def getTime():
 
     hhmm = hour + ":" + minute
     return hhmm
-
-
-def timeScreen():
-
-    oled.clearScreen()
-    time = getTime() # uses the network time
-    bigText(oled, time, 3, 0, 0, 0)
-
-    oled.show()
