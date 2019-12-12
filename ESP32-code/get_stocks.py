@@ -21,18 +21,32 @@ def getStocks(stock):
 
     data = response.json()
 
-    #if(response.status_code != "404"):
-    times = data["Time Series (Daily)"]
+    if(response.status_code != "404"):
 
-    (year, month, day, hour, minute, second, weekday, yearday) = localtime()
+        (year, month, day, hour, minute, second, weekday, yearday) = localtime()
 
-    todayDate = str(year) + "-" + str(month) + "-" + str(day)
+        times = data["Time Series (Daily)"]
 
-    todayValues = times[todayDate]
+        try:
+            todayDate = str(year) + "-" + str(month) + "-" + str(day)
 
-    current_value = todayValues.get("4. close")
+            todayValues = times[str(todayDate)]
 
-    return current_value
+            current_value = todayValues.get("4. close")
+
+            return current_value
+
+        except KeyError:
+            try:
+                todayDate = str(year) + "-" + str(month) + "-" + str(day - 1)
+                todayValues = times[str(todayDate)]
+                current_value = todayValues.get("4. close")
+                return current_value
+            except KeyError:
+                return("Stocks: Error!")
+
+    else:
+        return("Stocks: Error!")
 
 # Returns current from_currency to to_currency conversion rate
 def getExchange(from_currency, to_currency):
