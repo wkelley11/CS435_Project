@@ -128,7 +128,8 @@ def countdownTimer():
     oled.text(options, 0, 0)
     draw_down_arrow()
 
-    if flagB:
+    if(flagB):
+        flagB = False # reset flag
         setTimer(oled)
 
 
