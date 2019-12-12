@@ -21,7 +21,5 @@ def connect():
 
 connect()
 
-sleep(2)
-
 from main import *
 run()
