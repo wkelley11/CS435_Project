@@ -32,7 +32,8 @@ def getTime():
     (year, month, day, hour, minute, second, weekday, yearday) = localtime()
     #t = localtime()
 
-    hour = str(hour - 5)
+    hour = (hour % 12) + 7
+    hour = str(hour)
     minute = str(minute)
 
     if(len(hour) == 1):
