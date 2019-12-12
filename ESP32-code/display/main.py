@@ -4,7 +4,7 @@ import utime
 
 import ssd1306
 from side_bar import draw_side_bar
-from display_addons import bigText, displayTimeFormat
+from display_addons import bigText, displayTimeFormat, scrollLeft
 
 # API / Web collection scripts
 from get_time import getTime
@@ -68,45 +68,64 @@ oled.poweron()
 oled.clearScreen()
 oled.stopScroll()
 
+# Number of times the alarm 'rings'
+alarmDuration = 10
 
 def alarm(oled):
+
+    global flagC, flagA, flagB
+
     for i in range(alarmDuration):
+        if(flagA == True) and (flagC == True), flagB: # stop alarm
+            # lower the flags
+            flagA = False
+            flagB = False
+            flagC = False
+            break
         oled.clearScreen()
         sleep(1)
         oled.fillWhite()
         sleep(1)
 
-# Input:
-# - countdown: # minutes to count down from (max 60)
+# Input: oled, countdown: # minutes to count down from (max 60)
 def countdown(oled, countdown):
 
     global displayCount, displayMinutes, displaySeconds
-    global flagC
+    global flagA, flagB, flagC
+
     displayCount = countdown * 60 # displayCount is in seconds
     displayMinutes = countdown
     displaySeconds = 0
 
-    #display(oled, displayMinutes, displaySeconds)
+    while(flagC != True): # Pause loop
 
-    while((displayCount > 0) and (flagC != True)):
+        while((displayCount >= 0) and (flagC != True) and (flagB != True)):
 
-        sleep_ms(850)
+            sleep_ms(850)
 
-        oled.clearScreen()
-        displayTimeFormat(oled, displayMinutes, displaySeconds)
+            oled.clearScreen()
+            displayTimeFormat(oled, displayMinutes, displaySeconds)
 
-        if((displaySeconds % 60) == 0):
-            displayMinutes -= 1 # update minutes
+            if((displaySeconds % 60) == 0): # if it's been a minute
+                displayMinutes -= 1 # update minutes
 
-        displayCount -= 1 # decrement the counter every second
+            displayCount -= 1 # decrement the counter every second
+            displaySeconds = displayCount % 60 # update seconds
 
-        displaySeconds = displayCount % 60 # update seconds
+        if(displayCount <= 0): # if time is up
+            alarm(oled)
+            break
+        elif(flagC == True): # don't reset the flag yet, so we fully exit from timer
+            break
+        elif(flagB == True): # flag B raised – Pause timer
+            flagB = False # reset the Flag
+            while((flagB != True) and (flagC != True)): continue # get stuck in a while loop
+        else: # error handling
+            flagC = True # so that we fully exit from timer afterwards
+            break
 
-    if(flagC != True):
-        alarm(oled)
-    else:
-        flagC = False # reset the flag
-        oled.clearScreen()
+        if(flagB == True):
+            flagB = False # lower the flag to resume countdown
 
 
 def setTimer(oled):
@@ -136,7 +155,6 @@ def setTimer(oled):
     if(flagC == True):
         flagC = False
         oled.clearScreen()
-
 
 
 def timeRefresh():
@@ -176,7 +194,6 @@ def weatherRefresh():
     oled.text(temperature + " F", 0, 0)
     oled.text(forecast_msg, 0, 15)
 
-    #draw_side_bar(oled)
     oled.show()
 
 
@@ -184,8 +201,15 @@ def messageRefresh():
     # Display latest message from Adafruit IO broker
     message = getMQTTMessage()
 
-    oled.text(message, 0, 0)
-    oled.show()
+    oled.text("Last MQTT msg:", 0, 0)
+
+    if(len(message) > 20): # too long for screen!
+        while((not flagA) and (not flagC)):
+            scrollLeft(oled, message, 10, 15)
+
+    else:
+        oled.text(message, 10, 15)
+        oled.show()
 
 def countdownTimer():
 
@@ -218,10 +242,13 @@ def getNextState(currentState):
         nextState = (currentState - 1) % numberOfStates
         flagA = False # reset the flag until button A is pressed again
 
+    if(flagB == True):
+        flagB = False # default reset the flag
+
     # C was pressed
-    elif(flagC == True):
+    if(flagC == True):
         nextState = (currentState + 1) % numberOfStates
-        flagC = False
+        flagC = False # reset the flag until button C is pressed again
 
 
     if(currentState != nextState):
