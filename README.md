@@ -32,7 +32,7 @@ Note: make sure to purchase the board/OLED with pins soldered on (unless you wan
 2. Plug the OLED into the ESP32 (it'll' just stack neatly on top)
 3. Modify the boot.py file according to your Wifi settings, to connect it to your router.
 4. Using `ampy` (see Wolf Paulus' guide above), `ampy put` all of the files in the `ESP32-Code` directory onto the ESP32.
-5. If you made it here, you're solid! Simply reset your board (un-plug / plug bak in, or press the reset button on the OLED) and after a few seconds, the time should pop up on your screen.
+5. If you made it here, you're solid! Simply reset your board (un-plug / plug back in, or press the reset button on the OLED) and after a few seconds, the time screen should pop up on your screen.
 6. Read-on to learn how to navigate the screens.
 
 
@@ -40,12 +40,12 @@ Note: make sure to purchase the board/OLED with pins soldered on (unless you wan
 
 - Use buttons A (up) and C (down) to navigate through each of the screens and view the data.
 - If you're on the Timer screen:
-  - A will increment 1 to the Timer.
+  - A will increment the Timer by 1, when setting it.
   - B will let you enter the Timer function, start the timer once you've set it, and pause & resume the countdown.
   - C will let you exit the Timer.
 
 
-### Using MQTT to Upload Messages
+### Using MQTT to Upload Messages to the OLED
 
 You can send data from your phone to the screen with the MQTT protocol.  Here's how:
 
