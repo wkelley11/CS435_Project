@@ -1,5 +1,6 @@
 # This script provides functions to modify text or character size,
-# and scroll a string (of standard size) horizontally to the left.
+# scroll a string (of standard size) horizontally to the left,
+# and display a string in time format ("mm:ss").
 
 from font_petme128_8x8 import alphabet
 from time import sleep, sleep_ms
@@ -45,3 +46,26 @@ def scrollLeft(oled, str, x, y):
             sleep_ms(12) # sleep for 12 miliseconds
 
         oled.fill(0) # clear screen
+
+
+# Constructs a string to display to the screen in format: "mm:ss"
+# Input: oled, 2 integers
+def displayTimeFormat(oled, minutes, seconds):
+
+    # clear / reset displayString
+    displayString = ""
+
+    if(minutes < 9):
+        displayString += "0" + str(minutes)
+    else:
+        displayString += str(minutes)
+
+    displayString += ":"
+
+    if(seconds < 9):
+        displayString += "0" + str(seconds)
+    else:
+        displayString += str(seconds)
+
+    bigText(oled, displayString, 3, 0, 0, 0)
+    oled.show()
