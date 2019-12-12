@@ -17,7 +17,6 @@ flagC = False
 
 alarmDuration = 10 # number of seconds the alarm 'rings'
 
-
 i2c = I2C(-1, scl=Pin(22), sda=Pin(23))
 oled_width = 128
 oled_height = 32
@@ -69,7 +68,7 @@ def countdown(oled, countdown):
 
     while((displayCount > 0) and (flagC != True)):
 
-        sleep_ms(800) # sleep for roughly 800ms
+        sleep_ms(850)
 
         oled.clearScreen()
         display(oled, displayMinutes, displaySeconds)
