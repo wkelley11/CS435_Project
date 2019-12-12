@@ -129,7 +129,7 @@ def countdownTimer():
     draw_down_arrow()
 
     if flagB:
-        setTimer(OLED)
+        setTimer(oled)
 
 
 
