@@ -1,16 +1,16 @@
 from machine import Pin, I2C
-from time import sleep, sleep_ms
-import utime
+from utime import sleep, sleep_ms, ticks_ms()
 
-import ssd1306
-from side_bar import draw_side_bar
-from display_addons import bigText, displayTimeFormat, scrollLeft
+# Display scrips
+import display.ssd1306
+from display.side_bar import draw_side_bar
+from display.add_ons import bigText, displayTimeFormat, scrollLeft
 
 # API / Web collection scripts
-from get_time import getTime
-from get_stocks import getStocks, getExchange
-from get_Weather import getWeather
-from get_iomessage import getMQTTMessage
+from data.get_time import getTime
+from data.get_stocks import getStocks, getExchange
+from data.get_Weather import getWeather
+from data.get_iomessage import getMQTTMessage
 
 firstState = 0 # Default screen at initialization is timeScreen
 numberOfStates = 6
@@ -30,15 +30,16 @@ CURRENCY_DATA = getExchange("EUR", "USD") # returns a string
 WEATHER_DATA = getWeather() # Temperature & weather description (e.g. "sunny") returned as tuple
 
 # Global variable which stores a timestamp
-MACHINE_TIME = utime.ticks_ms()
+MACHINE_TIME = ticks_ms()
 
 # Gathers new data from APIs to update global data variables
 def refreshData(time):
 
-    current_time = utime.ticks_ms()
+    current_time = ticks_ms()
 
     # Refresh the data only if 20 minutes have passed since the last refresh
-    if(((current_time - time) / 1200000) >= 1):
+    #if(((current_time - time) / 1200000) >= 1):
+    if(((current_time - time) / 10000) >= 1):
         STOCK_DATA = getStocks("AAPL")
         CURRENCY_DATA = getExchange("EUR", "USD")
         WEATHER_DATA = getWeather()
@@ -57,32 +58,25 @@ flagA = False
 flagB = False
 flagC = False
 
-# Initialize the OLED
-# ESP32 Pin assignment
-i2c = I2C(-1, scl=Pin(22), sda=Pin(23))
-oled_width = 128
-oled_height = 32
-oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-
-oled.poweron()
-oled.clearScreen()
-oled.stopScroll()
-
 # Number of times the alarm 'rings'
 alarmDuration = 10
 
+# 'Alarm' for the timer: intermittently goes all blank and all black
+# for alarmDuration number of times
 def alarm(oled):
-
     global flagC, flagA, flagB
 
     for i in range(alarmDuration):
-        if(flagA == True) and (flagC == True), flagB: # stop alarm
+
+        oled.clearScreen()
+
+        if((flagA == True) or (flagC == True) or (flagB == True)): # stop alarm
             # lower the flags
             flagA = False
             flagB = False
             flagC = False
             break
-        oled.clearScreen()
+
         sleep(1)
         oled.fillWhite()
         sleep(1)
@@ -116,16 +110,24 @@ def countdown(oled, countdown):
             alarm(oled)
             break
         elif(flagC == True): # don't reset the flag yet, so we fully exit from timer
+            oled.clearScreen()
             break
         elif(flagB == True): # flag B raised – Pause timer
             flagB = False # reset the Flag
             while((flagB != True) and (flagC != True)): continue # get stuck in a while loop
-        else: # error handling
+        else: # error handling (just in case)
+            oled.clearScreen()
             flagC = True # so that we fully exit from timer afterwards
             break
 
         if(flagB == True):
             flagB = False # lower the flag to resume countdown
+
+    # Lower any flags
+    if(flagA == True):
+        flagA = False
+    if(flagC == True):
+        flagC = False
 
 
 def setTimer(oled):
@@ -140,6 +142,7 @@ def setTimer(oled):
 
     while((not flagB) and (not flagC)):
 
+        # If A pressed: increment the timer set by 1
         if(flagA == True):
             flagA = False
             usercount += 1
@@ -147,11 +150,12 @@ def setTimer(oled):
             oled.clearScreen()
             displayTimeFormat(oled, timer, 0)
 
-    # If B pressed --> start timer
+    # If B pressed: start timer
     if(flagB == True):
         flagB = False
         countdown(oled, timer)
 
+    # If C pressed --> exit the timer, break from loop
     if(flagC == True):
         flagC = False
         oled.clearScreen()
@@ -196,19 +200,18 @@ def weatherRefresh():
 
     oled.show()
 
-
 def messageRefresh():
     # Display latest message from Adafruit IO broker
     message = getMQTTMessage()
 
-    oled.text("Last MQTT msg:", 0, 0)
-
-    if(len(message) > 20): # too long for screen!
+    if(len(message) > 15): # too long for screen!
         while((not flagA) and (not flagC)):
-            scrollLeft(oled, message, 10, 15)
+            formatted_msg = "Last MQTT msg:" + message
+            scrollLeft(oled, formatted_msg, 0, 15)
 
     else:
-        oled.text(message, 10, 15)
+        oled.text("Last MQTT msg:", 0, 0)
+        oled.text(message, 0, 15)
         oled.show()
 
 def countdownTimer():
@@ -220,13 +223,39 @@ def countdownTimer():
     oled.text(options, 0, 12)
     oled.show()
 
+    # B pressed: user wishes to access the timer
     if(flagB == True):
         flagB = False # lower flag
+
+        oled.clearScreen()
+        oled.text("A: timer set +1", 0, 0)
+        oled.text("B: start/pause", 0, 10)
+        oled.text("C: exit", 0, 20)
+        oled.show()
+
+        sleep(3)
+
+        # In case user pressed buttons: lower the flags
+        flagA = False
+        flagB = False
+        flagC = False
+
         setTimer(oled)
 
 
-
 #######################################################
+
+
+# Initialize the OLED
+# ESP32 Pin assignment
+i2c = I2C(-1, scl=Pin(22), sda=Pin(23))
+oled_width = 128
+oled_height = 32
+oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
+
+oled.poweron()
+oled.clearScreen()
+
 
 # Figure out what the next logical state to visit is
 def getNextState(currentState):
@@ -278,7 +307,7 @@ def run():
     # Check if 20 minutes have passed since the last data update
     reset = refreshData(MACHINE_TIME)
     if reset:
-        MACHINE_TIME = utime.ticks_ms()
+        MACHINE_TIME = ticks_ms()
 
     while(True):
 
