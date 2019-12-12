@@ -73,7 +73,10 @@ class SSD1306(framebuf.FrameBuffer):
         self.fill(1)
         self.show()
 
-    # Scrolls the screen horizontally: text goes towards screen left edge
+    # Framebuffer scroll function: Scrolls the screen horizontally to the left.
+    # We recommend using the scroll function in add_ons.py, as the framebuffer size (i.e. GDDRAM)
+    # is no larger than the screen dimensions, i.e. 128*32 bits. This means you can't give it a string
+    # that is longer than the size of the screen, which defeats the purpose a little. So use ours.
     def scrollHorizontal(self):
         self.write_cmd(0x2A)        # Continuous horizontal scroll command
         self.write_cmd(0x00)        # Dummy byte
