@@ -52,7 +52,7 @@ You can send data from your phone to the screen with the MQTT protocol.  Here's 
   - Name: anything you want to name this (it'll only show up in your app)
   - Address: `io.adafruit.com`
   - Port: `1883`
-  - User name: `jcambefort` (you're welcome to make your own account!)
+  - User name: `jcambefort` (you're welcome to make your own account, or just use mine you little rascal!)
   - User password: `2edc7052c6c14d59b4348f933ca58556` (known as your "AIO key" on Adafruit IO)
   - Client ID: the name you want your device to be recognized as by the Adafruit IO server
 - Add a `text` or `string` block to your app dashboard (and/or Adafruit IO dashboard)
