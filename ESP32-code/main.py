@@ -2,7 +2,7 @@ from machine import Pin, I2C
 from utime import sleep, sleep_ms, ticks_ms
 
 # Display scrips
-import display.ssd1306
+import display.ssd1306 as ssd1306
 from display.side_bar import draw_side_bar
 from display.add_ons import bigText, displayTimeFormat, scrollLeft
 
