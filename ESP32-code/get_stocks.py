@@ -26,7 +26,7 @@ def getStocks(stock):
 
     (year, month, day, hour, minute, second, weekday, yearday) = localtime()
 
-    todayDate = str(year) + "-" + str(month) +"-" + str(date)
+    todayDate = str(year) + "-" + str(month) + "-" + str(day)
 
     todayValues = times[todayDate]
 

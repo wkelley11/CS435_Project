@@ -2,7 +2,7 @@
 # scroll a string (of standard size) horizontally to the left,
 # and display a string in time format ("mm:ss").
 
-from display.font_petme128_8x8 import alphabet
+from font_petme128_8x8 import alphabet
 from utime import sleep, sleep_ms
 
 # Function to expand text size by a factor. See fct input:

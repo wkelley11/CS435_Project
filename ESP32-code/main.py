@@ -2,15 +2,15 @@ from machine import Pin, I2C
 from utime import sleep, sleep_ms, ticks_ms
 
 # Display scrips
-import display.ssd1306 as ssd1306
-from display.side_bar import draw_side_bar
-from display.add_ons import bigText, displayTimeFormat, scrollLeft
+import ssd1306
+from side_bar import draw_side_bar
+from add_ons import bigText, displayTimeFormat, scrollLeft
 
 # API / Web collection scripts
-from data.get_time import getTime
-from data.get_stocks import getStocks, getExchange
-from data.get_Weather import getWeather
-from data.get_iomessage import getMQTTMessage
+from get_time import getTime
+from get_stocks import getStocks, getExchange
+from get_Weather import getWeather
+from get_iomessage import getMQTTMessage
 
 firstState = 0 # Default screen at initialization is timeScreen
 numberOfStates = 6
