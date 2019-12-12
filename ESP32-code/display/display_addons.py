@@ -3,7 +3,7 @@
 # and display a string in time format ("mm:ss").
 
 from font_petme128_8x8 import alphabet
-from time import sleep, sleep_ms
+from utime import sleep, sleep_ms
 
 # Function to expand text size by a factor. See fct input:
 # - oled object
