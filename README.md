@@ -12,6 +12,7 @@ We use the ESP32's wifi connectivity to request data from a few APIs, and displa
 - Value of Google stock (Alphavantage.co)
 - Euro to USD conversion rate (Alphavantage.co)
 - Weather (Accuweather.com)
+- MQTT Messages (Adafruit IO API)
 
 Note: these are in part a proof of concept.  You can inspire yourself from our API data-collection scripts to collect data from any API of interest and display it to the board as its own 'screen'.  The ESP32 isn't powerful enough to use a web-scraping tool like BeautifulSoup, which is why we resorted to APIs for this project.
 
