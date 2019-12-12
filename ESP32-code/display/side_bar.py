@@ -26,7 +26,7 @@ def draw_up_arrow(oled):
 
 def draw_down_arrow(oled):
 
-    # Draw up arrow
+    # Draw down arrow
     oled.text('C', 0, 24)
     arrow_top_x = 16
     arrow_top_y = 22

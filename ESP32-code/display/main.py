@@ -11,6 +11,7 @@ from get_time import getTime
 from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
 from io_api import getMQTTMessage
+from kitchenTimer import setTimer
 
 # Global variables to store data
 STOCK_DATA = getStocks("AAPL")
@@ -43,6 +44,7 @@ states = [
     "currencyScreen",
     "weatherScreen",
     "messageScreen"
+    "countdownScreen"
 ]
 
 # Set the pins on the ESP32
@@ -120,6 +122,17 @@ def messageRefresh():
     oled.text(message, 0, 0)
     oled.show()
 
+def countdownTimer():
+    draw_up_arrow()
+    options = "B: Set timer."
+    oled.text(options, 0, 0)
+    draw_down_arrow()
+
+    if flagB:
+        setTimer(OLED)
+
+
+
 #######################################################
 
 # Figure out what the next logical state to visit is
@@ -176,6 +189,7 @@ def run():
         elif(states[nextState] == "currencyScreen"): currencyRefresh()
         elif(states[nextState] == "weatherScreen"): weatherRefresh()
         elif(states[nextState] == "messageScreen"): messageRefresh()
+        elif(states[nextState]== "countdownScreen"): countdownTimer()
 
         currentState = nextState
         nextState = getNextState(currentState)
