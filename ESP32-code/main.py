@@ -206,7 +206,7 @@ def messageRefresh():
             scrollLeft(oled, formatted_msg, 0, 15)
 
     else:
-        oled.text("Last MQTT msg:", 0, 0)
+        oled.text("Last MQTT msg: ", 0, 0)
         oled.text(message, 0, 15)
         oled.show()
 
