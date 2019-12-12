@@ -83,8 +83,8 @@ You can send data from your phone to the screen with the MQTT protocol.  Here's 
 
 If the screen is dark, hit the reset button and wait a few seconds! It should turn on.  Make sure to avoid spam-clicking any buttons – some of the APIs may need a few seconds (the connection might be poor).  Avoid overloading the board.
 
-We would have liked to make it easier for you to load the board with the code by splitting things into a couple directories, but the board didn't cope well with these (ampy returned a `tuple index out of range` error – we're not sure why either).
+We would have liked to make it easier for you to load the board with the code by splitting things into a couple directories, but the board didn't cope well with directories (ampy returned a `tuple index out of range` error upon upload – we're not entirely sure why either).
 
 This project was submitted in the context of a classroom, and you may find our final report summary in the `final-report` folder, from a more in-depth overview of things, to current issues with the project, to a `future-work` wish-list for the project, and more.
 
-Many thanks to the Middlebury College Computer Science department, notably Professor Andrea Vaccari, Adafruit, MicroPython, and Wolf Paulus, for all of the help and resources provided!
+Many thanks to Adafruit, MicroPython and Wolf Paulus, the Middlebury College Computer Science department, and notably Professor Andrea Vaccari for all of the help and resources provided along the way!
