@@ -1,8 +1,7 @@
-# importing the requests library
 import urequests
 import json
 
-# Get the Middlebury weather from the Accuweather API using the postal code
+# Get the local (Middlebury) weather from the Accuweather API, using the zip code
 def getWeather():
 
     # API credentials
@@ -32,13 +31,12 @@ def getWeather():
     if((response.status_code != 200)):
         tuple = ("Error:", "API overused.")
         return tuple
+    else:
+        formated_data = data[0]
+        temp_data = formated_data["Temperature"]
+        temp = temp_data["Value"]
+        description = formated_data["IconPhrase"]
 
-    formated_data = data[0]
-    temp_data = formated_data["Temperature"]
-    temp = temp_data["Value"]
-    description = formated_data["IconPhrase"]
-
-    tuple = str(temp), str(description)
-    #print(tuple)
+        tuple = str(temp), str(description)
 
     return tuple

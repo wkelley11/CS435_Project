@@ -4,56 +4,55 @@ import utime
 
 import ssd1306
 from side_bar import draw_side_bar
-from display_addons import bigText
+from display_addons import bigText, displayTimeFormat
 
-# Web scraping scripts
+# API / Web collection scripts
 from get_time import getTime
 from get_stocks import getStocks, getExchange
 from get_Weather import getWeather
-from io_api import getMQTTMessage
-from kitchenTimer import setTimer
-
-# Global variables to store data
-STOCK_DATA = getStocks("AAPL")
-CURRENCY_DATA = getExchange("EUR", "USD")
-WEATHER_DATA = getWeather() #temp and description stored as tuple
-MACHINE_TIME = utime.ticks_ms()
-
-def refreshData(time):
-    #gathers new data from APIs to update global data variables
-
-    current_time = utime.ticks_ms()
-
-    if ((current_time - MACHINE_TIME) / 1200000) >= 1:
-        #refresh the data only if 20 minutes have passed since last refresh
-        STOCK_DATA = getStocks("AAPL")
-        CURRENCY_DATA = getExchange("EUR", "USD")
-        WEATHER_DATA = getWeather()
-        return True
-    else return False
-
-
-
+from get_iomessage import getMQTTMessage
 
 firstState = 0 # Default screen at initialization is timeScreen
-numberOfStates = 5
+numberOfStates = 6
 
 states = [
     "timeScreen",
     "stockScreen",
     "currencyScreen",
     "weatherScreen",
-    "messageScreen"
+    "messageScreen",
     "countdownScreen"
 ]
 
-# Set the pins on the ESP32
+# Global variables to store data
+STOCK_DATA = getStocks("AAPL") # returns a string
+CURRENCY_DATA = getExchange("EUR", "USD") # returns a string
+WEATHER_DATA = getWeather() # Temperature & weather description (e.g. "sunny") returned as tuple
+
+# Global variable which stores a timestamp
+MACHINE_TIME = utime.ticks_ms()
+
+# Gathers new data from APIs to update global data variables
+def refreshData(time):
+
+    current_time = utime.ticks_ms()
+
+    # Refresh the data only if 20 minutes have passed since the last refresh
+    if(((current_time - time) / 1200000) >= 1):
+        STOCK_DATA = getStocks("AAPL")
+        CURRENCY_DATA = getExchange("EUR", "USD")
+        WEATHER_DATA = getWeather()
+        return True
+    else:
+        return False
+
+# Set the ESP32 pins for the buttons / ISRs
 # When a button is pressed, the respective pin is driven low
 pinA = Pin(15, Pin.IN)
 pinB = Pin(32, Pin.IN)
 pinC = Pin(14, Pin.IN)
 
-# Flags --> if 1, button was pressed
+# Flags --> if True, the button was pressed
 flagA = False
 flagB = False
 flagC = False
@@ -69,6 +68,77 @@ oled.poweron()
 oled.clearScreen()
 oled.stopScroll()
 
+
+def alarm(oled):
+    for i in range(alarmDuration):
+        oled.clearScreen()
+        sleep(1)
+        oled.fillWhite()
+        sleep(1)
+
+# Input:
+# - countdown: # minutes to count down from (max 60)
+def countdown(oled, countdown):
+
+    global displayCount, displayMinutes, displaySeconds
+    global flagC
+    displayCount = countdown * 60 # displayCount is in seconds
+    displayMinutes = countdown
+    displaySeconds = 0
+
+    #display(oled, displayMinutes, displaySeconds)
+
+    while((displayCount > 0) and (flagC != True)):
+
+        sleep_ms(850)
+
+        oled.clearScreen()
+        displayTimeFormat(oled, displayMinutes, displaySeconds)
+
+        if((displaySeconds % 60) == 0):
+            displayMinutes -= 1 # update minutes
+
+        displayCount -= 1 # decrement the counter every second
+
+        displaySeconds = displayCount % 60 # update seconds
+
+    if(flagC != True):
+        alarm(oled)
+    else:
+        flagC = False # reset the flag
+        oled.clearScreen()
+
+
+def setTimer(oled):
+    # A is increment, B is start, C is exit
+
+    global flagA, flagB, flagC
+
+    usercount = 0
+    timer = 0
+    oled.clearScreen()
+    displayTimeFormat(oled, timer, 0)
+
+    while((not flagB) and (not flagC)):
+
+        if(flagA == True):
+            flagA = False
+            usercount += 1
+            timer = usercount % 60
+            oled.clearScreen()
+            displayTimeFormat(oled, timer, 0)
+
+    # If B pressed --> start timer
+    if(flagB == True):
+        flagB = False
+        countdown(oled, timer)
+
+    if(flagC == True):
+        flagC = False
+        oled.clearScreen()
+
+
+
 def timeRefresh():
     #display the current time
 
@@ -79,19 +149,14 @@ def timeRefresh():
 
 def stockRefresh():
     #display value of Apple stock
-    while(True):
-        # display current value of Apple stock
-        #apple_stock = getStocks("AAPL")
-        apple_stock = STOCK_DATA
-        string = "AAPL: "
-        stock = apple_stock + " USD"
-        bigText(oled, string, 2, 0, 0, 0)
-        oled.text(stock, 0, 20)
-        oled.show()
-
-    while(True):
-        if(flagA == True):
-            break
+    # display current value of Apple stock
+    #apple_stock = getStocks("AAPL")
+    apple_stock = STOCK_DATA
+    string = "AAPL: "
+    stock = apple_stock + " USD"
+    bigText(oled, string, 2, 0, 0, 0)
+    oled.text(stock, 0, 20)
+    oled.show()
 
 def currencyRefresh():
     # display Euro to USD exchange rate
@@ -123,13 +188,16 @@ def messageRefresh():
     oled.show()
 
 def countdownTimer():
-    draw_up_arrow()
-    options = "B: Set timer."
-    oled.text(options, 0, 0)
-    draw_down_arrow()
 
-    if(flagB):
-        flagB = False # reset flag
+    global flagB
+
+    draw_side_bar(oled)
+    options = "B: Set timer."
+    oled.text(options, 0, 12)
+    oled.show()
+
+    if(flagB == True):
+        flagB = False # lower flag
         setTimer(oled)
 
 
@@ -175,10 +243,12 @@ def getNextState(currentState):
 # Setting up main as a state machine
 def run():
 
-    global firstState, states # get the global list of states
-    nextState = firstState
+    global firstState, states  # get the global list of states
+    global MACHINE_TIME
 
-    #check if 20 minutes have past since last data update.
+    nextState = firstState # set to 0
+
+    # Check if 20 minutes have passed since the last data update
     reset = refreshData(MACHINE_TIME)
     if reset:
         MACHINE_TIME = utime.ticks_ms()
@@ -194,11 +264,14 @@ def run():
 
         currentState = nextState
         nextState = getNextState(currentState)
-        #checkTimeElapsed()
+
+        sleep_ms(200) # Short delay to prevent button debouncing
 
 
 ######################################################
 
+# ISR functions: raise a flag (True) if button pressed.
+# Lower the flag (set to False) elsewhere, once we've processed the flag.
 
 # ISR: button A pressed
 def APressed(pinA):
@@ -208,7 +281,7 @@ def APressed(pinA):
 # ISR: button C pressed
 def BPressed(pinB):
     global flagB
-    flagC = True
+    flagB = True
 
 # ISR: button C pressed
 def CPressed(pinC):
