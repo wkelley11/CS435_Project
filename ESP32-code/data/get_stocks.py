@@ -2,6 +2,7 @@
 
 import urequests
 import json
+from utime import localtime
 
 # Returns current
 def getStocks(stock):
@@ -23,9 +24,13 @@ def getStocks(stock):
     #if(response.status_code != "404"):
     times = data["Time Series (Daily)"]
 
-    today = times["2019-12-04"]
+    (year, month, day, hour, minute, second, weekday, yearday) = localtime()
 
-    current_value = today.get("4. close")
+    todayDate = str(year) + "-" + str(month) +"-" + str(date)
+
+    todayValues = times[todayDate]
+
+    current_value = todayValues.get("4. close")
 
     return current_value
 
