@@ -1,5 +1,5 @@
 from machine import Pin, I2C
-from utime import sleep, sleep_ms, ticks_ms()
+from utime import sleep, sleep_ms, ticks_ms
 
 # Display scrips
 import display.ssd1306
