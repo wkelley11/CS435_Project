@@ -1,7 +1,7 @@
 # Fridge Magnet: CS435 Embedded Systems Project
 by Will Kelley and John Cambefort
 
-\*cheesy voice\* Ever wished you'd had a cool interactive digital fridge?
+\*cheesy voice\* Ever wished you owned a cool interactive digital fridge?
 We're not offering you a fridge, but we can offer you our embedded Fridge Magnet!
 
 
