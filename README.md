@@ -7,9 +7,9 @@ We're not offering you a fridge, but we can offer you our embedded Fridge Magnet
 
 ### Project Components
 
-- ESP32 Huzzah Featherwing board
-- Adafruit Featherwing OLED
-- MicroPython
+- [ESP32 Huzzah Featherwing board](https://www.adafruit.com/product/3405)
+- [Adafruit Featherwing OLED](https://www.adafruit.com/product/2900)
+- [MicroPython](https://micropython.org/download)
 
 Note: make sure to purchase the board/OLED with pins soldered on (unless you want to do that).
 
