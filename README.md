@@ -28,7 +28,7 @@ Note: these are in part a proof of concept.  You can inspire yourself from our A
 
 ### Set-Up
 
-1. Flash MicroPython to your board. We recommend Wolf Paulus' guide: https://wolfpaulus.com/micro-python-esp32/
+1. Flash MicroPython to your board. We recommend [Wolf Paulus' guide](https://wolfpaulus.com/micro-python-esp32/)
 2. Plug the OLED into the ESP32 (it'll' just stack neatly on top)
 3. Modify the boot.py file according to your Wifi settings, to connect it to your router.
 4. Using `ampy` (see Wolf Paulus' guide above), `ampy put` all of the files in the `ESP32-Code` directory onto the ESP32.
@@ -76,7 +76,7 @@ You can send data from your phone to the screen with the MQTT protocol.  Here's 
 - `add_ons.py`: perhaps the most useful file for anyone looking to use the OLED, this has a text expansion function, smooth scroll, and display time in "minutes:seconds" format.
 - `font_petme128_8x8.py`: this is a Micropython library used to display characters to the board. Each character is 8 bytes, where the first bit in the byte is at the top, and the last is at the bottom (the bytes are ordered vertically on the screen).
 - `side_bar.py`: handler script to display simple navigation (up and down arrows).
-- `ssd1306.py`: slightly modified (just added a function or two) driver for the SSD1306 OLED screen. The driver is from the MicroPython library: https://github.com/micropython/micropython/blob/master/drivers/display/ssd1306.py
+- `ssd1306.py`: slightly modified (just added a function or two) driver for the SSD1306 OLED screen. The driver is from the MicroPython library: https://github.com/micropython/micropython/blob/master/drivers/display/ssd1306.py.
 
 
 ### Notes & Thanks
