@@ -5,7 +5,6 @@ import json
 def getWeather():
 
     # API credentials
-    #api_key = "gDHp31aDxUWAjKN7RffVTyuYtfNA3Bj7"
     api_key = "K3rGM32WvHlTIGBm28mtQsBAghcJ6cwQ"
 
     # API: get hourly weather forecast
@@ -13,7 +12,7 @@ def getWeather():
     api_r = "?apikey="
     zip_r = "&q="
 
-    # zip code
+    # zip code (Middlebury, VT)
     zip = "05753"
 
     # Accuweather location_key
