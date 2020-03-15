@@ -1,7 +1,7 @@
 from machine import Pin, I2C
 from utime import sleep, sleep_ms, ticks_ms
 
-# Display scrips
+# Display scripts
 import ssd1306
 from side_bar import draw_side_bar
 from add_ons import bigText, displayTimeFormat, scrollLeft
