@@ -6,7 +6,7 @@ def getMQTTMessage():
     base_url = "https://io.adafruit.com/api/v2/jcambefort/feeds"
     feed_key = "stringupload"
     data_request = "data/last"
-    AIO_key = "2edc7052c6c14d59b4348f933ca58556"
+    AIO_key = AIO_secret
 
     full_url = base_url + "/" + feed_key + "/" + data_request + "/" + "?x-aio-key=" + AIO_key
 
