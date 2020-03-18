@@ -7,7 +7,7 @@ from utime import localtime
 # Returns current
 def getStocks(stock):
     # Alphavantage credentials
-    api_key = "NRKWC04SMTNZ17H2"
+    api_key = STOCKS_secret
 
     # Alphavantage API request url
     base_url = "https://www.alphavantage.co/query?"
